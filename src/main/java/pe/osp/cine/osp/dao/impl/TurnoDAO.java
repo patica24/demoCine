@@ -20,9 +20,9 @@ public class TurnoDAO implements ITurnoDAO {
 	private EntityManager entityManager;
 
 	@Override
-	public void agregarTurno(Turno turno) {
+	public void mergeTurno(Turno turno) {
 		// TODO Auto-generated method stub
-		entityManager.persist(turno);
+		entityManager.merge(turno);
 	}
 
 	@Override
@@ -39,11 +39,6 @@ public class TurnoDAO implements ITurnoDAO {
 		entityManager.remove(buscarTurno(id));
 	}
 
-	@Override
-	public void actualizarTurno(Turno turno) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	@Override
 	public Turno buscarTurno(long id) {

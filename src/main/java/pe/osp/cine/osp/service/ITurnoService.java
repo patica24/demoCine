@@ -5,11 +5,11 @@ import pe.osp.cine.osp.entity.Turno;
 
 public interface ITurnoService {
 	
-	 void agregarTurno(Turno turno);
+	 void mergeTurno(Turno turno);
 	 
 	 List<Turno> listarTurno();
 	 
 	 void eliminarTurno(long id);
 	 
-	 void actualizarTurno(Turno turno);
+	 Turno buscarTurno(long id);
 }

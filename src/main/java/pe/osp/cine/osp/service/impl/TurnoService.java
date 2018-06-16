@@ -20,9 +20,9 @@ public class TurnoService implements ITurnoService {
 	private ITurnoDAO turnoDAO;
 
 	@Override
-	public void agregarTurno(Turno turno) {
+	public void mergeTurno(Turno turno) {
 		// TODO Auto-generated method stub
-		turnoDAO.agregarTurno(turno);
+		turnoDAO.mergeTurno(turno);
 	}
 
 	@Override
@@ -38,9 +38,9 @@ public class TurnoService implements ITurnoService {
 	}
 
 	@Override
-	public void actualizarTurno(Turno turno) {
+	public Turno buscarTurno(long id) {
 		// TODO Auto-generated method stub
-		turnoDAO.actualizarTurno(turno);
+		return turnoDAO.buscarTurno(id);
 	}
 
 	

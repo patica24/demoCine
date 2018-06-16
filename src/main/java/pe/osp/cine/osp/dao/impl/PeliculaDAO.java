@@ -10,6 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import pe.osp.cine.osp.dao.IPeliculaDAO;
 import pe.osp.cine.osp.entity.Pelicula;
+import pe.osp.cine.osp.entity.Peliculaxturno;
+import pe.osp.cine.osp.entity.PeliculaxturnoPK;
+import pe.osp.cine.osp.entity.Turno;
 
 @Transactional
 @Repository
@@ -18,9 +21,9 @@ public class PeliculaDAO implements IPeliculaDAO {
 	private EntityManager entityManager;
 
 	@Override
-	public void agregarPelicula(Pelicula pelicula) {
+	public void mergePelicula(Pelicula pelicula) {
 		// TODO Auto-generated method stub
-		entityManager.persist(pelicula);
+		entityManager.merge(pelicula);
 	}	
 	
 	@SuppressWarnings("unchecked")
@@ -28,15 +31,41 @@ public class PeliculaDAO implements IPeliculaDAO {
 		String hql = "FROM Pelicula as p ORDER BY p.idPelicula";
 		return (List<Pelicula>) entityManager.createQuery(hql).getResultList();
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Peliculaxturno> listarPeliculasXTurno(long idPelicula) {
+		String hql = "FROM Peliculaxturno e where e.pelicula.idPelicula = :id";
+		return (List<Peliculaxturno>) entityManager.createQuery(hql).setParameter("id", idPelicula).getResultList();
+	}
+	
 
 	@Override
-	public void eliminarPelicula(Pelicula pelicula) {
-		entityManager.remove(pelicula);
+	public void eliminarPelicula(long id) {
+		// TODO Auto-generated method stub		
+		entityManager.remove(buscarPelicula(id));
+	}
+
+	
+	@Override
+	public Pelicula buscarPelicula(long id) {
+		return entityManager.find(Pelicula.class, id);
 	}
 
 	@Override
-	public void actualizarPelicula(Pelicula pelicula) {
+	public void eliminarPeliculaXTurno(PeliculaxturnoPK pxt) {
 		// TODO Auto-generated method stub
-		
+		entityManager.remove(buscarPeliculaxturno(pxt));
+	
 	}
+	
+	public Peliculaxturno buscarPeliculaxturno(PeliculaxturnoPK pxt) {
+		return entityManager.find(Peliculaxturno.class, pxt);
+	}
+	
+	@Override
+	public void mergePeliculaxturno(Peliculaxturno peliculaxturno) {
+		// TODO Auto-generated method stub
+		entityManager.merge(peliculaxturno);
+	}	
+
 }

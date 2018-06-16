@@ -121,7 +121,7 @@
     
         <section class="content-header">
           <h1>
-            MANTENIMIENTO DE TURNOS
+            TURNOS PARA : <span th:text="${peliculaxturno.pelicula.nomPelicula}"> </span>
             
           </h1>
           <ol class="breadcrumb">
@@ -139,10 +139,27 @@
               <!-- general form elements disabled -->
               <div class="box box-info">
                 <div class="box-header">
-                  <h3 class="box-title">Mantenimiento de Turnos</h3>
+                  <h3 class="box-title">Mantenimiento de Turnos por pelicula</h3>
                 </div><!-- /.box-header -->
                 <div class="box-body">
-                  
+            <form class="form-group" action="#" th:action="@{/guardarPeliculaxturno}" th:object="${peliculaxturno}" method="post">
+            <input type="hidden" th:field="${peliculaxturno.pelicula.idPelicula}">
+            <div class="row">
+                    <div class="col-md-6 form-group">
+                      <label>Agregar Turno</label>
+                      <select th:field="${peliculaxturno.turno.idTurno}"  class="form-control">
+                         <option th:each="turno : ${turnos}"
+                            th:value="${turno.idTurno}"
+                            th:utext="${turno.turno}"/>
+                  		</select>
+                    </div>
+                    <div class="col-md-6 form-group">
+                      <label></label><br/>
+                      <button type="submit" class="btn btn-primary" >REGISTRAR</button>
+                    </div>
+                    
+            </div>
+            </form>
 
            <div class="row">
             <div class="col-xs-9">
@@ -154,23 +171,17 @@
                     <tr>
                       <th>ID</th>
                       <th>TURNO</th>
-                      <th>ESTADO</th>
                       <th>ANULAR</th>
-                      <th>EDITAR</th>
                     </tr>
               		</thead>
               		<tbody> 
-                    <tr th:each="item : ${turnos}">
-                      <td th:text="${item.idTurno}">ID</td>
-                      <td th:text="${item.turno}">TURNO</td>
-                      <td th:text="${item.estado}">ACTIVO-INACTIVO</td>
+                    <tr th:each="item : ${turnosxpelicula}">
+                      <td th:text="${item.turno.idTurno}">ID</td>
+                      <td th:text="${item.turno.turno}">TURNO</td>
                       <td>
-                       <a th:href="@{/eliminarTurno/__${item.idTurno}__}">
+                       <a th:href="@{/eliminarTurnoxPelicula/__${peliculaxturno.pelicula.idPelicula}__/__${item.turno.idTurno}__}">
 	                    <button type="button" class="badge bg-red">X</button>
 	                    </a>
-                 	  </td>
-                      <td>
-	                    <button th:onclick="'javascript:modalTurno(\'' + ${item.idTurno} + '\');'" id="modalTurno" type="button" class="badge bg-blue" >O</button>
                  	  </td>
                     </tr>
 				</tbody>
@@ -178,9 +189,7 @@
                     <tr>
                       <th>ID</th>
                       <th>TURNO</th>
-                      <th>ESTADO</th>
                       <th>ANULAR</th>
-                      <th>EDITAR</th>
                     </tr>
                     </tfoot>
                   </table>
@@ -189,16 +198,7 @@
           
             </div>
           </div>
-                    <div class="box-footer" style="padding-left:15px;">                    
-                    		<button th:onclick="'javascript:modalTurno(0);'" type="button" class="btn btn-primary" >NUEVO</button>
-                    </div>
-               
-                    <!-- INICIO MODAL -->
-                    <!-- Modal Nuevo-->
-					<div id="modalHolder">
-					</div>
-					<!-- FIN MODAL <button type="button" class="btn btn-primary">Guardar</button> -->
-                    
+
                   
                 </div><!-- /.box-body -->
               </div><!-- /.box -->
@@ -226,19 +226,6 @@
     <script src="../../dist/js/app.min.js" type="text/javascript"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="../../dist/js/demo.js" type="text/javascript"></script>
-
-
-	<script th:inline="javascript" type="text/javascript">
-		function modalTurno(id){			
-			$.ajax({
-				url: "/modalTurno/" + id,
-				success: function(data) {
-					$("#modalHolder").html(data);
-					$("#modalNuevo").modal("show");
-				}
-			})
-		}
-	</script>
 
   </body>
 </html>

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import pe.osp.cine.osp.dao.IPeliculaDAO;
 import pe.osp.cine.osp.entity.Pelicula;
+import pe.osp.cine.osp.entity.Peliculaxturno;
+import pe.osp.cine.osp.entity.PeliculaxturnoPK;
 import pe.osp.cine.osp.service.IPeliculaService;
 
 @Service
@@ -17,9 +19,9 @@ public class PeliculaService implements IPeliculaService {
 	private IPeliculaDAO peliculaDAO;
 
 	@Override
-	public void agregarPelicula(Pelicula pelicula) {
+	public void mergePelicula(Pelicula pelicula) {
 		// TODO Auto-generated method stub
-		peliculaDAO.agregarPelicula(pelicula);
+		peliculaDAO.mergePelicula(pelicula);
 	}
 
 	@Override
@@ -29,17 +31,39 @@ public class PeliculaService implements IPeliculaService {
 	}
 
 	@Override
-	public void eliminarPelicula(Pelicula pelicula) {
+	public void eliminarPelicula(long id) {
 		// TODO Auto-generated method stub
-		peliculaDAO.eliminarPelicula(pelicula);
+		peliculaDAO.eliminarPelicula(id);
 	}
 
 	@Override
-	public void actualizarPelicula(Pelicula pelicula) {
+	public Pelicula buscarPelicula(long id) {
 		// TODO Auto-generated method stub
-		peliculaDAO.actualizarPelicula(pelicula);
+		return peliculaDAO.buscarPelicula(id);
 	}
+
+	@Override
+	public List<Peliculaxturno> listarPeliculasXTurno(long idPelicula) {
+		// TODO Auto-generated method stub
+		return peliculaDAO.listarPeliculasXTurno(idPelicula);
+	}
+
+
+	@Override
+	public void mergePeliculaxturno(Peliculaxturno peliculaxturno) {
+		// TODO Auto-generated method stub
+		peliculaDAO.mergePeliculaxturno(peliculaxturno);
+	}
+
+	@Override
+	public void eliminarPeliculaXTurno(PeliculaxturnoPK pxt) {
+		// TODO Auto-generated method stub
+		peliculaDAO.eliminarPeliculaXTurno(pxt);
+	}
+
 	
+
+
 	
 	
 	

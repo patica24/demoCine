@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import pe.osp.cine.osp.entity.Pelicula;
+import pe.osp.cine.osp.entity.Peliculaxturno;
+import pe.osp.cine.osp.entity.PeliculaxturnoPK;
 import pe.osp.cine.osp.entity.Turno;
 import pe.osp.cine.osp.service.IPeliculaService;
 import pe.osp.cine.osp.service.ITurnoService;
@@ -31,8 +33,8 @@ public class AplicacionController {
 	-----------------------------*/
 	@RequestMapping(value="/")
     public String viewPeliculas(Model model) {
-    	List<Pelicula> peli =  peliculaService.listarPeliculas();
-        model.addAttribute("peliculas", peli);
+    	List<Pelicula> pelicula =  peliculaService.listarPeliculas();
+        model.addAttribute("peliculas", pelicula);
         model.addAttribute("pelicula", new Pelicula());
         return "peliculas";
     }
@@ -42,12 +44,125 @@ public class AplicacionController {
 	-----------------------------*/
 	@RequestMapping(value="/guardarPelicula", method = RequestMethod.POST)
     public String saveTurno(Model model, Pelicula pelicula) {
-		peliculaService.agregarPelicula(pelicula);
+		peliculaService.mergePelicula(pelicula);
     	List<Pelicula> list =  peliculaService.listarPeliculas();
     	model.addAttribute("peliculas", list);
     	model.addAttribute("pelicula", new Pelicula());
         return "peliculas";
     }    
+	
+	/*---------------------------
+	Action : ANULAR PELICULA
+	-----------------------------*/
+	@RequestMapping(value="/eliminarPelicula/{id}", method = RequestMethod.GET)
+    public String deletePelicula(Model model, @PathVariable(required = true, name = "id") long id) {
+		turnoService.eliminarTurno(id);
+    	List<Turno> list =  turnoService.listarTurno();
+    	model.addAttribute("turnos", list);
+        return "turnos";
+    }
+	
+	/*----------------------------
+	 PANTALLA: MODAL PELICULA
+	-----------------------------*/
+	
+	@RequestMapping("/modalPelicula/{id}")
+	public String modalPelicula(Model model, @PathVariable(required = true, name = "id") long id) {
+		if(id ==0 ) {
+			model.addAttribute("pelicula",new Pelicula());
+		}else {
+			Pelicula pelicula = peliculaService.buscarPelicula(id);
+			model.addAttribute("pelicula",pelicula );
+		}
+		
+	    return "modalPelicula :: modalContents";
+	}
+	
+	/*----------------------------
+	 PANTALLA: PELICULA X TURNOS
+	-----------------------------*/
+	
+	@RequestMapping("/peliculaxTurno/{id}")
+	public String peliculaXTurnos(Model model, @PathVariable(required = true, name = "id") long id) {
+			Pelicula pelicula = peliculaService.buscarPelicula(id);
+			
+			Peliculaxturno peliculaxturno = new Peliculaxturno();
+			peliculaxturno.setPelicula(pelicula);
+			peliculaxturno.setTurno(new Turno());
+			
+			model.addAttribute("peliculaxturno",peliculaxturno);
+			
+			List<Peliculaxturno> peliculasxturno = peliculaService.listarPeliculasXTurno(id);
+			model.addAttribute("turnosxpelicula",peliculasxturno);
+			
+			List<Turno> turno =  turnoService.listarTurno();
+			model.addAttribute("turnos",turno);
+
+	    return "peliculaxTurno";
+	}
+	
+
+	/*----------------------------
+	 PANTALLA: PELICULA X TURNOS
+	-----------------------------*/
+	
+	@RequestMapping("/eliminarTurnoxPelicula/{idPelicula}/{idTurno}")
+	public String eliminarPeliculaXTurnos(Model model, @PathVariable(required = true, name = "idPelicula") long idPelicula, @PathVariable(required = true, name = "idTurno") long idTurno) {
+			PeliculaxturnoPK peliculapk = new PeliculaxturnoPK();
+			peliculapk.setIdPelicula(idPelicula);
+			peliculapk.setIdTurno(idTurno);
+			
+			peliculaService.eliminarPeliculaXTurno(peliculapk);
+			
+			Pelicula pelicula = peliculaService.buscarPelicula(idPelicula);
+			
+			Peliculaxturno peliculaxturno = new Peliculaxturno();
+			peliculaxturno.setPelicula(pelicula);
+			peliculaxturno.setTurno(new Turno());
+			
+			model.addAttribute("peliculaxturno",peliculaxturno);
+			
+			List<Peliculaxturno> peliculasxturno = peliculaService.listarPeliculasXTurno(idPelicula);
+			model.addAttribute("turnosxpelicula",peliculasxturno);
+			
+			List<Turno> turno =  turnoService.listarTurno();
+			model.addAttribute("turnos",turno);
+
+	    return "peliculaxTurno";
+	}
+	
+    /*---------------------------
+	Action : GUARDAR PELICULAS POR TURNOS
+	-----------------------------*/
+	@RequestMapping(value="/guardarPeliculaxturno", method = RequestMethod.POST)
+    public String savePeliculasxTurno(Model model, Peliculaxturno peliculaxturno) {
+		
+		System.out.println(peliculaxturno.getPelicula().getIdPelicula());
+		System.out.println(peliculaxturno.getTurno().getIdTurno());
+		
+		PeliculaxturnoPK peliculapk = new PeliculaxturnoPK();
+		peliculapk.setIdPelicula(peliculaxturno.getPelicula().getIdPelicula());
+		peliculapk.setIdTurno(peliculaxturno.getTurno().getIdTurno());
+		peliculaxturno.setId(peliculapk);
+		peliculaService.mergePeliculaxturno(peliculaxturno);
+		
+		Pelicula pelicula = peliculaService.buscarPelicula(peliculaxturno.getPelicula().getIdPelicula());
+		
+		Peliculaxturno peliculaxturnotemp = new Peliculaxturno();
+		peliculaxturnotemp.setPelicula(pelicula);
+		peliculaxturnotemp.setTurno(new Turno());
+		
+		model.addAttribute("peliculaxturno",peliculaxturnotemp);
+		
+		List<Peliculaxturno> peliculasxturno = peliculaService.listarPeliculasXTurno(peliculaxturno.getPelicula().getIdPelicula());
+		model.addAttribute("turnosxpelicula",peliculasxturno);
+		
+		List<Turno> turno =  turnoService.listarTurno();
+		model.addAttribute("turnos",turno);
+        return "peliculaxTurno";
+    }
+	
+	
 	
 	/*---------------------------
 	Pantalla : LISTA TODAS LOS TURNOS
@@ -56,8 +171,6 @@ public class AplicacionController {
     public String viewTurnos(Model model) {
     	List<Turno> turno =  turnoService.listarTurno();
         model.addAttribute("turnos", turno);
-        model.addAttribute("turno", new Turno());
-        model.addAttribute("tur",new Turno());
         return "turnos";
     }
     
@@ -66,10 +179,9 @@ public class AplicacionController {
 	-----------------------------*/
 	@RequestMapping(value="/guardarTurno", method = RequestMethod.POST)
     public String saveTurno(Model model, Turno turno) {
-		turnoService.agregarTurno(turno);
+		turnoService.mergeTurno(turno);
     	List<Turno> list =  turnoService.listarTurno();
     	model.addAttribute("turnos", list);
-    	model.addAttribute("turno", new Turno());
         return "turnos";
     }
 	
@@ -81,15 +193,24 @@ public class AplicacionController {
 		turnoService.eliminarTurno(id);
     	List<Turno> list =  turnoService.listarTurno();
     	model.addAttribute("turnos", list);
-    	model.addAttribute("turno", new Turno());
         return "turnos";
     }
 	
-	@RequestMapping("/showContentPart")
-	public String showContentPart(Model model) {
-		Turno tur = new Turno();
-		model.addAttribute("tur",tur );
-	    return "turnos :: #contenido";
+	/*----------------------------
+	 PANTALLA: MODAL TURNO
+	-----------------------------*/
+	
+	@RequestMapping("/modalTurno/{id}")
+	public String modalTurno(Model model, @PathVariable(required = true, name = "id") long id) {
+		
+		if(id ==0 ) {
+			model.addAttribute("turno",new Turno());
+		}else {
+			Turno turno = turnoService.buscarTurno(id);
+			model.addAttribute("turno",turno );
+		}
+		
+	    return "modalTurno :: modalContents";
 	}
 	
 	

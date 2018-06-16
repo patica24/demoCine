@@ -170,6 +170,7 @@
                       <th>ESTADO</th>
                       <th>ANULAR</th>
                       <th>EDITAR</th>
+                      <th>TURNOS</th>
                     </tr>
               		</thead>
               		<tbody> 
@@ -179,10 +180,17 @@
                       <td th:text="${#dates.format(item.fechaPublicacion, 'dd/MM/yyyy')}" >FECHA DE PUBLICACION</td>
                       <td th:text="${item.estado}">ACTIVO-INACTIVO</td>
                       <td>
-	                    <button type="button" class="badge bg-red"  data-toggle="modal" data-target="#modalAnular">X</button>
+	                    <a th:href="@{/eliminarPelicula/__${item.idPelicula}__}">
+	                    <button type="button" class="badge bg-red">X</button>
+	                    </a>
                  	  </td>
                       <td>
-                      	<button type="button" class="badge bg-blue"  data-toggle="modal" data-target="#modalNuevo">O</button>
+                      	<button th:onclick="'javascript:modalPelicula(\'' + ${item.idPelicula} + '\');'" id="modalPelicula" type="button" class="badge bg-blue" >O</button>
+                 	  </td>
+                 	  <td>
+                 	  	<a th:href="@{/peliculaxTurno/__${item.idPelicula}__}">
+                      	<button type="button" class="badge bg-yellow" >V</button>
+                      	</a>
                  	  </td>
                     </tr>
 				</tbody>
@@ -194,6 +202,7 @@
                       <th>ESTADO</th>
                       <th>ANULAR</th>
                       <th>EDITAR</th>
+                      <th>TURNOS</th>
                     </tr>
                     </tfoot>
                   </table>
@@ -205,63 +214,13 @@
                   
                     
                     <div class="box-footer" style="padding-left:15px;">                    
-					        <button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#modalNuevo">NUEVO</button>
+					        <button th:onclick="'javascript:modalPelicula(0);'" type="button" class="btn btn-primary" >NUEVO</button>
                     </div>
                     
                     <!-- INICIO MODAL -->
                     <!-- Modal Nuevo-->
-                 
-					<div class="modal fade" id="modalNuevo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-					  <div class="modal-dialog" role="document">
-					    <div class="modal-content">
-					      <div class="modal-header">
-					        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					        <h4 class="modal-title" id="myModalLabel">Datos de Pelicula</h4>
-					      </div>
-					      <form class="form-group" action="#" th:action="@{/guardarPelicula}" th:object="${pelicula}" method="post">
-					      <div class="modal-body">
-					        Pelicula:<br/>
-					        <input id="txtDes" class="form-control" th:field="${pelicula.nomPelicula}" placeholder="Ingrese Descripcion"/><br/>
-					        Fecha de publicacion<br/>
-					        <input type="text" id="datepicker" class="form-control" th:field="${pelicula.fechaPublicacion}">
-					        Estado <br/>
-							<select class="form-control" th:field="${pelicula.estado}" >
-							  <option value="ACTIVO">ACTIVO</option>
-							  <option value="INACTIVO">INACTIVO</option>
-							</select>
-							<br/>
-					      </div>
-					      <div class="modal-footer">	      
-					        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-					        
-					        <button type="submit" class="btn btn-primary" data-toggle="modal">Guardar</button>
-					      </div>
-					      </form>
-					    </div>
-					  </div>
-					</div>
-				
-					
-					
-					<!-- Modal Anular-->
-                   
-					<div class="modal fade" id="modalAnular" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-					  <div class="modal-dialog" role="document">
-					    <div class="modal-content">
-					      <div class="modal-header">
-					        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					        <h4 class="modal-title" id="myModalLabel">Anular Pelicula</h4>
-					      </div>
-					      <div class="modal-body">
-					      
-					       Est&#225; seguro que desea ANULAR Pelicula<br/>
-					      </div>
-					      <div class="modal-footer">
-					        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>					        
-					        <button type="button" class="btn btn-primary" data-dismiss="modal">Anular</button>
-					      </div>
-					    </div>
-					  </div>
+
+					<div id="modalHolder">
 					</div>
 					
 					<!-- FIN MODAL <button type="button" class="btn btn-primary">Guardar</button> -->
@@ -310,12 +269,39 @@
     <!-- datepicker -->
     <script src="../../plugins/datepicker/bootstrap-datepicker.js" type="text/javascript"></script>
     <!-- Page script -->
-    <script type="text/javascript">
-      $( function() {    	   
-    	    $.fn.datepicker.defaults.format = "dd/mm/yyyy";
- 	        $.fn.datepicker.defaults.language = "es";
- 	        $( "#datepicker" ).datepicker();
-    	  } );
+    	<script type="text/javascript">	
+    	$( function() {    	   
+	    		$.fn.datepicker.defaults.format = "dd/mm/yyyy";
+	        	$.fn.datepicker.defaults.language = "es";
+	        	$( "#datepicker" ).datepicker();
+	  	} );
     </script>
+	<script th:inline="javascript" type="text/javascript">
+	
+		function modalPelicula(id){			
+			$.ajax({
+				url: "/modalPelicula/" + id,
+				success: function(data) {
+		    		$.fn.datepicker.defaults.format = "dd/mm/yyyy";
+		        	$.fn.datepicker.defaults.language = "es";
+					$("#modalHolder").html(data);
+					$("#datepicker" ).datepicker();
+					$("#modalNuevo").modal("show");
+				}
+			})
+		}
+		
+		function modalPeliculaXTurno(id){			
+			$.ajax({
+				url: "/modalPeliculaxTurno/" + id,
+				success: function(data) {
+					$("#modalHolder").html(data);
+					$("#modalTurnos").modal("show");
+				}
+			})
+		}
+		
+		
+	</script>
   </body>
 </html>

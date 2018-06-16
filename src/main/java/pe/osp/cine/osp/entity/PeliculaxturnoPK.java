@@ -13,28 +13,35 @@ public class PeliculaxturnoPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Column(name="nid_pelicula")
-	private int idPelicula;
+	private long idPelicula;
 
 	@Column(name="nid_turno")
-	private int idTurno;
+	private long idTurno;
 
     public PeliculaxturnoPK() {
     }
 	
 
-	public int getIdPelicula() {
+	public long getIdPelicula() {
 		return idPelicula;
 	}
-	public void setIdPelicula(int idPelicula) {
+
+
+	public void setIdPelicula(long idPelicula) {
 		this.idPelicula = idPelicula;
 	}
-	public int getIdTurno() {
+
+
+	public long getIdTurno() {
 		return idTurno;
 	}
-	public void setIdTurno(int idTurno) {
+
+
+	public void setIdTurno(long idTurno) {
 		this.idTurno = idTurno;
 	}
-	
+/*
+
 	public boolean equals(Object other) {
 		if (this == other) {
 			return true;
@@ -50,11 +57,11 @@ public class PeliculaxturnoPK implements Serializable {
     }
     
 	public int hashCode() {
-		final int prime = 31;
-		int hash = 17;
+		final long prime = 31;
+		long hash = 17;
 		hash = hash * prime + this.idPelicula;
 		hash = hash * prime + this.idTurno;
 		
 		return hash;
-    }
+    }*/
 }
