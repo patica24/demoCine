@@ -3,6 +3,7 @@ package pe.osp.cine.osp.dao.impl;
 import java.util.List;
 
 
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
@@ -12,7 +13,6 @@ import pe.osp.cine.osp.dao.IPeliculaDAO;
 import pe.osp.cine.osp.entity.Pelicula;
 import pe.osp.cine.osp.entity.Peliculaxturno;
 import pe.osp.cine.osp.entity.PeliculaxturnoPK;
-import pe.osp.cine.osp.entity.Turno;
 
 @Transactional
 @Repository

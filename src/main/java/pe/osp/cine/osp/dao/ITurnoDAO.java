@@ -1,7 +1,6 @@
 package pe.osp.cine.osp.dao;
 import java.util.List;
 
-import pe.osp.cine.osp.entity.Pelicula;
 import pe.osp.cine.osp.entity.Turno;
 
 public interface ITurnoDAO {
