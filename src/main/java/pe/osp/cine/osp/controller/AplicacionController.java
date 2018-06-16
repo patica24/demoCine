@@ -56,10 +56,20 @@ public class AplicacionController {
 	-----------------------------*/
 	@RequestMapping(value="/eliminarPelicula/{id}", method = RequestMethod.GET)
     public String deletePelicula(Model model, @PathVariable(required = true, name = "id") long id) {
-		turnoService.eliminarTurno(id);
-    	List<Turno> list =  turnoService.listarTurno();
-    	model.addAttribute("turnos", list);
-        return "turnos";
+
+		
+		
+		List<Peliculaxturno> peliculasxturno = peliculaService.listarPeliculasXTurno(id);
+		for(int i = 0; i< peliculasxturno.size();i++) {
+			peliculaService.eliminarPeliculaXTurno(peliculasxturno.get(i).getId());
+		}
+		
+		peliculaService.eliminarPelicula(id);
+		
+    	List<Pelicula> list =  peliculaService.listarPeliculas();
+    	model.addAttribute("peliculas", list);
+    	model.addAttribute("pelicula", new Pelicula());
+        return "peliculas";
     }
 	
 	/*----------------------------
@@ -136,9 +146,6 @@ public class AplicacionController {
 	-----------------------------*/
 	@RequestMapping(value="/guardarPeliculaxturno", method = RequestMethod.POST)
     public String savePeliculasxTurno(Model model, Peliculaxturno peliculaxturno) {
-		
-		System.out.println(peliculaxturno.getPelicula().getIdPelicula());
-		System.out.println(peliculaxturno.getTurno().getIdTurno());
 		
 		PeliculaxturnoPK peliculapk = new PeliculaxturnoPK();
 		peliculapk.setIdPelicula(peliculaxturno.getPelicula().getIdPelicula());
